@@ -14,6 +14,60 @@ export type Database = {
   }
   public: {
     Tables: {
+      kyc_submissions: {
+        Row: {
+          created_at: string
+          date_of_birth: string
+          document_back_url: string | null
+          document_front_url: string
+          document_number: string
+          document_type: Database["public"]["Enums"]["kyc_document_type"]
+          full_name: string
+          id: string
+          rejection_reason: string | null
+          reviewed_at: string | null
+          selfie_url: string
+          status: Database["public"]["Enums"]["kyc_status"]
+          submitted_at: string
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          date_of_birth: string
+          document_back_url?: string | null
+          document_front_url: string
+          document_number: string
+          document_type: Database["public"]["Enums"]["kyc_document_type"]
+          full_name: string
+          id?: string
+          rejection_reason?: string | null
+          reviewed_at?: string | null
+          selfie_url: string
+          status?: Database["public"]["Enums"]["kyc_status"]
+          submitted_at?: string
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          date_of_birth?: string
+          document_back_url?: string | null
+          document_front_url?: string
+          document_number?: string
+          document_type?: Database["public"]["Enums"]["kyc_document_type"]
+          full_name?: string
+          id?: string
+          rejection_reason?: string | null
+          reviewed_at?: string | null
+          selfie_url?: string
+          status?: Database["public"]["Enums"]["kyc_status"]
+          submitted_at?: string
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
       profiles: {
         Row: {
           avatar_url: string | null
@@ -171,6 +225,12 @@ export type Database = {
       }
     }
     Enums: {
+      kyc_document_type:
+        | "citizenship"
+        | "passport"
+        | "drivers_license"
+        | "national_id"
+      kyc_status: "pending" | "approved" | "rejected"
       transaction_status: "pending" | "completed" | "failed" | "reversed"
       transaction_type:
         | "topup"
@@ -305,6 +365,13 @@ export type CompositeTypes<
 export const Constants = {
   public: {
     Enums: {
+      kyc_document_type: [
+        "citizenship",
+        "passport",
+        "drivers_license",
+        "national_id",
+      ],
+      kyc_status: ["pending", "approved", "rejected"],
       transaction_status: ["pending", "completed", "failed", "reversed"],
       transaction_type: [
         "topup",
