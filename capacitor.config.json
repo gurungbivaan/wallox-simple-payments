@@ -1,0 +1,9 @@
+{
+  "appId": "app.lovable.193b42e4f2034d7f93e477c6a0d345db",
+  "appName": "Wallox",
+  "webDir": "dist",
+  "server": {
+    "url": "https://193b42e4-f203-4d7f-93e4-77c6a0d345db.lovableproject.com?forceHideBadge=true",
+    "cleartext": true
+  }
+}
