@@ -31,6 +31,7 @@ const App = () => (
             <Route path="/history" element={<HistoryPage />} />
             <Route path="/send" element={<SendMoneyPage />} />
             <Route path="/settings" element={<SettingsPage />} />
+            <Route path="/hotels" element={<HotelPage />} />
             <Route path="*" element={<NotFound />} />
           </Routes>
           <BottomNav />
