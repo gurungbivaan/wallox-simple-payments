@@ -1,4 +1,4 @@
-import { ArrowLeft, Smartphone, Check, Loader2 } from "lucide-react";
+import { ArrowLeft, Smartphone, Check, ArrowDownLeft, Send } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { motion, AnimatePresence } from "framer-motion";
 import { useState } from "react";
@@ -7,13 +7,19 @@ type NFCState = "idle" | "searching" | "found" | "confirm" | "success";
 
 const NFCPage = () => {
   const navigate = useNavigate();
+  const [mode, setMode] = useState<"send" | "receive">("send");
   const [state, setState] = useState<NFCState>("idle");
   const [amount, setAmount] = useState("");
 
   const startNFC = () => {
-    if (!amount) return;
+    if (mode === "send" && !amount) return;
     setState("searching");
     setTimeout(() => setState("found"), 2500);
+  };
+
+  const resetFlow = () => {
+    setState("idle");
+    setAmount("");
   };
 
   return (
@@ -25,29 +31,65 @@ const NFCPage = () => {
         <h1 className="font-display text-lg font-semibold">NFC Transfer</h1>
       </div>
 
+      {/* Send / Receive Toggle */}
+      <div className="mx-5 mt-5 flex rounded-xl bg-secondary p-1">
+        <button
+          onClick={() => { setMode("send"); resetFlow(); }}
+          className={`flex-1 flex items-center justify-center gap-1.5 rounded-lg py-2.5 text-sm font-medium transition-colors ${
+            mode === "send" ? "bg-primary text-primary-foreground" : "text-muted-foreground"
+          }`}
+        >
+          <Send className="h-3.5 w-3.5" /> Send
+        </button>
+        <button
+          onClick={() => { setMode("receive"); resetFlow(); }}
+          className={`flex-1 flex items-center justify-center gap-1.5 rounded-lg py-2.5 text-sm font-medium transition-colors ${
+            mode === "receive" ? "bg-primary text-primary-foreground" : "text-muted-foreground"
+          }`}
+        >
+          <ArrowDownLeft className="h-3.5 w-3.5" /> Receive
+        </button>
+      </div>
+
       <div className="px-5 pt-8">
         <AnimatePresence mode="wait">
           {state === "idle" && (
             <motion.div key="idle" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}>
-              <div className="mb-6">
-                <label className="text-xs font-medium text-muted-foreground">Amount to Send</label>
-                <div className="mt-2 flex items-baseline gap-2">
-                  <span className="font-display text-2xl font-bold text-muted-foreground">Rs.</span>
-                  <input
-                    type="number"
-                    value={amount}
-                    onChange={(e) => setAmount(e.target.value)}
-                    placeholder="0"
-                    className="flex-1 bg-transparent font-display text-4xl font-bold text-foreground placeholder:text-muted outline-none"
-                  />
+              {mode === "send" ? (
+                <div className="mb-6">
+                  <label className="text-xs font-medium text-muted-foreground">Amount to Send</label>
+                  <div className="mt-2 flex items-baseline gap-2">
+                    <span className="font-display text-2xl font-bold text-muted-foreground">Rs.</span>
+                    <input
+                      type="number"
+                      value={amount}
+                      onChange={(e) => setAmount(e.target.value)}
+                      placeholder="0"
+                      className="flex-1 bg-transparent font-display text-4xl font-bold text-foreground placeholder:text-muted outline-none"
+                    />
+                  </div>
                 </div>
-              </div>
+              ) : (
+                <div className="mb-6">
+                  <label className="text-xs font-medium text-muted-foreground">Amount to Request (optional)</label>
+                  <div className="mt-2 flex items-baseline gap-2">
+                    <span className="font-display text-2xl font-bold text-muted-foreground">Rs.</span>
+                    <input
+                      type="number"
+                      value={amount}
+                      onChange={(e) => setAmount(e.target.value)}
+                      placeholder="Any amount"
+                      className="flex-1 bg-transparent font-display text-4xl font-bold text-foreground placeholder:text-muted outline-none"
+                    />
+                  </div>
+                </div>
+              )}
               <button
                 onClick={startNFC}
-                disabled={!amount}
+                disabled={mode === "send" && !amount}
                 className="w-full rounded-xl bg-primary py-3.5 text-sm font-semibold text-primary-foreground transition-opacity disabled:opacity-40"
               >
-                Start NFC Transfer
+                {mode === "send" ? "Start NFC Transfer" : "Start Receiving"}
               </button>
             </motion.div>
           )}
@@ -69,7 +111,9 @@ const NFCPage = () => {
                   <Smartphone className="h-12 w-12 text-primary animate-pulse-glow" />
                 </div>
               </div>
-              <h3 className="mt-8 font-display text-lg font-semibold">Searching for device...</h3>
+              <h3 className="mt-8 font-display text-lg font-semibold">
+                {mode === "send" ? "Searching for device..." : "Waiting for sender..."}
+              </h3>
               <p className="mt-2 text-sm text-muted-foreground">Hold phones close together</p>
             </motion.div>
           )}
@@ -88,34 +132,27 @@ const NFCPage = () => {
                 </div>
                 <div className="mt-4 h-px bg-border" />
                 <div className="mt-4 flex items-center justify-between">
-                  <span className="text-sm text-muted-foreground">Amount</span>
-                  <span className="font-display text-xl font-bold">Rs. {Number(amount).toLocaleString()}</span>
+                  <span className="text-sm text-muted-foreground">
+                    {mode === "send" ? "Sending" : "Receiving"}
+                  </span>
+                  <span className="font-display text-xl font-bold">
+                    Rs. {amount ? Number(amount).toLocaleString() : "1,500"}
+                  </span>
                 </div>
               </div>
               <div className="mt-4 flex gap-3">
-                <button
-                  onClick={() => setState("idle")}
-                  className="flex-1 rounded-xl bg-secondary py-3 text-sm font-medium text-foreground"
-                >
+                <button onClick={resetFlow} className="flex-1 rounded-xl bg-secondary py-3 text-sm font-medium text-foreground">
                   Cancel
                 </button>
-                <button
-                  onClick={() => setState("success")}
-                  className="flex-1 rounded-xl bg-primary py-3 text-sm font-semibold text-primary-foreground"
-                >
-                  Confirm & Send
+                <button onClick={() => setState("success")} className="flex-1 rounded-xl bg-primary py-3 text-sm font-semibold text-primary-foreground">
+                  {mode === "send" ? "Confirm & Send" : "Accept"}
                 </button>
               </div>
             </motion.div>
           )}
 
           {state === "success" && (
-            <motion.div
-              key="success"
-              initial={{ opacity: 0, scale: 0.8 }}
-              animate={{ opacity: 1, scale: 1 }}
-              className="flex flex-col items-center pt-12"
-            >
+            <motion.div key="success" initial={{ opacity: 0, scale: 0.8 }} animate={{ opacity: 1, scale: 1 }} className="flex flex-col items-center pt-12">
               <motion.div
                 initial={{ scale: 0 }}
                 animate={{ scale: 1 }}
@@ -124,12 +161,14 @@ const NFCPage = () => {
               >
                 <Check className="h-10 w-10 text-primary-foreground" />
               </motion.div>
-              <h3 className="mt-6 font-display text-xl font-bold">Transfer Successful!</h3>
-              <p className="mt-2 text-sm text-muted-foreground">Rs. {Number(amount).toLocaleString()} sent to Arun Sharma</p>
-              <button
-                onClick={() => { setState("idle"); setAmount(""); }}
-                className="mt-8 rounded-xl bg-secondary px-8 py-3 text-sm font-medium text-foreground"
-              >
+              <h3 className="mt-6 font-display text-xl font-bold">
+                {mode === "send" ? "Transfer Successful!" : "Payment Received!"}
+              </h3>
+              <p className="mt-2 text-sm text-muted-foreground">
+                Rs. {amount ? Number(amount).toLocaleString() : "1,500"}{" "}
+                {mode === "send" ? "sent to" : "received from"} Arun Sharma
+              </p>
+              <button onClick={resetFlow} className="mt-8 rounded-xl bg-secondary px-8 py-3 text-sm font-medium text-foreground">
                 Done
               </button>
             </motion.div>

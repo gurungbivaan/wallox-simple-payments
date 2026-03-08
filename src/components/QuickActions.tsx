@@ -1,4 +1,4 @@
-import { Send, QrCode, Wifi, Receipt, ArrowDownLeft, Settings } from "lucide-react";
+import { Send, QrCode, Wifi, Receipt, ArrowDownLeft, Building2 } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { motion } from "framer-motion";
 
@@ -7,13 +7,14 @@ const actions = [
   { icon: ArrowDownLeft, label: "Request", color: "bg-accent/15 text-accent", path: "/qr" },
   { icon: QrCode, label: "QR Pay", color: "bg-info/15 text-info", path: "/qr" },
   { icon: Receipt, label: "Bills", color: "bg-warning/15 text-warning", path: "/bills" },
+  { icon: Building2, label: "Hotels", color: "bg-success/15 text-success", path: "/hotels" },
 ];
 
 const QuickActions = () => {
   const navigate = useNavigate();
 
   return (
-    <div className="grid grid-cols-4 gap-3">
+    <div className="grid grid-cols-5 gap-2">
       {actions.map((action, i) => (
         <motion.button
           key={action.label}
