@@ -16,11 +16,11 @@ const exchangeRates = [
 ];
 
 const settingsItems = [
-  { icon: User, label: "Profile & KYC", desc: "Verify your identity", color: "text-primary" },
-  { icon: Shield, label: "Security", desc: "PIN, biometrics, 2FA", color: "text-success" },
-  { icon: CreditCard, label: "Linked Accounts", desc: "Bank accounts & cards", color: "text-accent" },
-  { icon: Bell, label: "Notifications", desc: "Manage alerts", color: "text-warning" },
-  { icon: HelpCircle, label: "Help & Support", desc: "FAQs and contact", color: "text-info" },
+  { icon: User, label: "Profile & KYC", desc: "Verify your identity", color: "text-primary", path: "/kyc" },
+  { icon: Shield, label: "Security", desc: "PIN, biometrics, 2FA", color: "text-success", path: null },
+  { icon: CreditCard, label: "Linked Accounts", desc: "Bank accounts & cards", color: "text-accent", path: null },
+  { icon: Bell, label: "Notifications", desc: "Manage alerts", color: "text-warning", path: null },
+  { icon: HelpCircle, label: "Help & Support", desc: "FAQs and contact", color: "text-info", path: null },
 ];
 
 const SettingsPage = () => {
