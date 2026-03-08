@@ -82,14 +82,14 @@ const AuthPage = () => {
     <div className="min-h-screen bg-background flex flex-col">
       {/* Header */}
       <div className="flex flex-col items-center pt-12 pb-6 px-5">
-        <motion.div
+        <motion.img
+          src={walloxLogo}
+          alt="WalloX"
           initial={{ scale: 0 }}
           animate={{ scale: 1 }}
           transition={{ type: "spring", bounce: 0.5 }}
-          className="flex h-16 w-16 items-center justify-center rounded-2xl bg-primary mb-4"
-        >
-          <span className="font-display text-2xl font-bold text-primary-foreground">W</span>
-        </motion.div>
+          className="h-20 w-auto mb-4"
+        />
         <h1 className="font-display text-2xl font-bold text-foreground">
           {mode === "login" ? "Welcome Back" : "Create Account"}
         </h1>
