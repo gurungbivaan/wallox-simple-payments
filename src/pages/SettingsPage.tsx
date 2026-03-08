@@ -23,6 +23,7 @@ const settingsItems = [
 
 const SettingsPage = () => {
   const navigate = useNavigate();
+  const { signOut } = useAuth();
   const [showExchange, setShowExchange] = useState(false);
   const [convertAmount, setConvertAmount] = useState("1000");
   const [selectedCurrency, setSelectedCurrency] = useState("USD");
