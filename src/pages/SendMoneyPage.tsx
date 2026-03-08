@@ -3,28 +3,28 @@ import { useNavigate } from "react-router-dom";
 import { motion, AnimatePresence } from "framer-motion";
 import { useState } from "react";
 import PinVerification from "@/components/PinVerification";
+import { useLookupUser, useTransfer } from "@/hooks/use-wallet";
+import { useToast } from "@/hooks/use-toast";
 
 type SendMethod = "phone" | "email" | "wallox";
 
 const methodConfig = {
   phone: { icon: Phone, label: "Phone Number", placeholder: "+977 98XXXXXXXX" },
   email: { icon: Mail, label: "Email Address", placeholder: "user@example.com" },
-  wallox: { icon: Hash, label: "Wallox ID", placeholder: "wallox://user-id" },
+  wallox: { icon: Hash, label: "Wallox ID", placeholder: "wallox-xxxxxxxx" },
 };
-
-const recentContacts = [
-  { name: "Arun Sharma", phone: "+977 98XXXXXX12", avatar: "A" },
-  { name: "Priya Thapa", phone: "+977 98XXXXXX34", avatar: "P" },
-  { name: "Suman Rai", phone: "+977 98XXXXXX56", avatar: "S" },
-  { name: "Kabita Lama", phone: "+977 98XXXXXX78", avatar: "K" },
-];
 
 const SendMoneyPage = () => {
   const navigate = useNavigate();
+  const { toast } = useToast();
   const [method, setMethod] = useState<SendMethod>("phone");
   const [recipient, setRecipient] = useState("");
   const [amount, setAmount] = useState("");
   const [step, setStep] = useState<"recipient" | "amount" | "verify" | "success">("recipient");
+  const [resolvedUser, setResolvedUser] = useState<{ user_id: string; full_name: string; wallox_id: string } | null>(null);
+
+  const lookupUser = useLookupUser();
+  const transfer = useTransfer();
 
   const config = methodConfig[method];
 
@@ -32,6 +32,31 @@ const SendMoneyPage = () => {
     if (step === "recipient") navigate("/");
     else if (step === "amount") setStep("recipient");
     else if (step === "verify") setStep("amount");
+  };
+
+  const handleContinueToAmount = async () => {
+    try {
+      const found = await lookupUser.mutateAsync({ identifier: recipient, method });
+      setResolvedUser(found);
+      setStep("amount");
+    } catch {
+      toast({ title: "User Not Found", description: "No account found with that identifier.", variant: "destructive" });
+    }
+  };
+
+  const handleTransferSuccess = () => {
+    if (!resolvedUser) return;
+    transfer.mutate(
+      {
+        receiverId: resolvedUser.user_id,
+        amount: Number(amount),
+        description: `Transfer to ${resolvedUser.full_name}`,
+      },
+      {
+        onSuccess: () => setStep("success"),
+        onError: () => setStep("amount"),
+      }
+    );
   };
 
   return (
@@ -77,35 +102,12 @@ const SendMoneyPage = () => {
               </div>
             </div>
 
-            {method === "phone" && (
-              <div className="mt-6">
-                <h3 className="text-xs font-medium text-muted-foreground mb-3">Recent Contacts</h3>
-                <div className="space-y-2">
-                  {recentContacts.map((c) => (
-                    <button
-                      key={c.name}
-                      onClick={() => setRecipient(c.phone)}
-                      className="flex w-full items-center gap-3 rounded-xl px-3 py-2.5 transition-colors hover:bg-secondary"
-                    >
-                      <div className="flex h-9 w-9 items-center justify-center rounded-full bg-primary/15">
-                        <span className="text-sm font-semibold text-primary">{c.avatar}</span>
-                      </div>
-                      <div className="text-left">
-                        <p className="text-sm font-medium text-foreground">{c.name}</p>
-                        <p className="text-xs text-muted-foreground">{c.phone}</p>
-                      </div>
-                    </button>
-                  ))}
-                </div>
-              </div>
-            )}
-
             <button
-              onClick={() => setStep("amount")}
-              disabled={!recipient}
+              onClick={handleContinueToAmount}
+              disabled={!recipient || lookupUser.isPending}
               className="mt-6 w-full rounded-xl bg-primary py-3.5 text-sm font-semibold text-primary-foreground transition-opacity disabled:opacity-40"
             >
-              Continue
+              {lookupUser.isPending ? "Looking up..." : "Continue"}
             </button>
           </motion.div>
         )}
@@ -117,8 +119,8 @@ const SendMoneyPage = () => {
                 <User className="h-4 w-4 text-primary" />
               </div>
               <div>
-                <p className="text-sm font-medium text-foreground">Sending to</p>
-                <p className="text-xs text-muted-foreground">{recipient}</p>
+                <p className="text-sm font-medium text-foreground">{resolvedUser?.full_name ?? "Unknown"}</p>
+                <p className="text-xs text-muted-foreground">{resolvedUser?.wallox_id}</p>
               </div>
             </div>
 
@@ -138,11 +140,7 @@ const SendMoneyPage = () => {
 
             <div className="mt-4 flex gap-2">
               {[500, 1000, 2000, 5000].map((a) => (
-                <button
-                  key={a}
-                  onClick={() => setAmount(String(a))}
-                  className="flex-1 rounded-lg bg-secondary py-2 text-xs font-medium text-foreground"
-                >
+                <button key={a} onClick={() => setAmount(String(a))} className="flex-1 rounded-lg bg-secondary py-2 text-xs font-medium text-foreground">
                   {a.toLocaleString()}
                 </button>
               ))}
@@ -150,7 +148,7 @@ const SendMoneyPage = () => {
 
             <button
               onClick={() => setStep("verify")}
-              disabled={!amount}
+              disabled={!amount || Number(amount) <= 0}
               className="mt-6 w-full rounded-xl bg-primary py-3.5 text-sm font-semibold text-primary-foreground transition-opacity disabled:opacity-40"
             >
               Send Rs. {amount ? Number(amount).toLocaleString() : "0"}
@@ -162,10 +160,10 @@ const SendMoneyPage = () => {
           <PinVerification
             key="verify"
             summaryItems={[
-              { label: "To", value: recipient },
+              { label: "To", value: resolvedUser?.full_name ?? recipient },
               { label: "Amount", value: `Rs. ${Number(amount).toLocaleString()}` },
             ]}
-            onSuccess={() => setStep("success")}
+            onSuccess={handleTransferSuccess}
             onCancel={() => setStep("amount")}
           />
         )}
@@ -181,9 +179,9 @@ const SendMoneyPage = () => {
               <Check className="h-10 w-10 text-primary-foreground" />
             </motion.div>
             <h3 className="mt-6 font-display text-xl font-bold">Sent Successfully!</h3>
-            <p className="mt-2 text-sm text-muted-foreground">Rs. {Number(amount).toLocaleString()} sent to {recipient}</p>
+            <p className="mt-2 text-sm text-muted-foreground">Rs. {Number(amount).toLocaleString()} sent to {resolvedUser?.full_name}</p>
             <button
-              onClick={() => { setStep("recipient"); setRecipient(""); setAmount(""); }}
+              onClick={() => { setStep("recipient"); setRecipient(""); setAmount(""); setResolvedUser(null); }}
               className="mt-8 rounded-xl bg-secondary px-8 py-3 text-sm font-medium text-foreground"
             >
               Done
