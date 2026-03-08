@@ -130,7 +130,45 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
-      [_ in never]: never
+      lookup_user: {
+        Args: { p_identifier: string; p_method?: string }
+        Returns: {
+          full_name: string
+          user_id: string
+          wallox_id: string
+        }[]
+      }
+      process_payment: {
+        Args: {
+          p_amount: number
+          p_description?: string
+          p_metadata?: Json
+          p_type?: Database["public"]["Enums"]["transaction_type"]
+          p_user_id: string
+        }
+        Returns: string
+      }
+      process_topup: {
+        Args: {
+          p_amount: number
+          p_description?: string
+          p_metadata?: Json
+          p_user_id: string
+        }
+        Returns: string
+      }
+      process_transfer: {
+        Args: {
+          p_amount: number
+          p_description?: string
+          p_fee?: number
+          p_metadata?: Json
+          p_receiver_id: string
+          p_sender_id: string
+          p_type?: Database["public"]["Enums"]["transaction_type"]
+        }
+        Returns: string
+      }
     }
     Enums: {
       transaction_status: "pending" | "completed" | "failed" | "reversed"
