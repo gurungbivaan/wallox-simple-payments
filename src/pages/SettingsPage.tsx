@@ -144,6 +144,7 @@ const SettingsPage = () => {
             initial={{ opacity: 0, y: 8 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.15 + i * 0.04 }}
+            onClick={() => item.path && navigate(item.path)}
             className="wallox-card flex w-full items-center gap-3 p-4 text-left transition-colors hover:bg-card-elevated"
           >
             <item.icon className={`h-5 w-5 ${item.color}`} />
