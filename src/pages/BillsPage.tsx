@@ -1,21 +1,29 @@
-import { ArrowLeft, Search, ChevronRight } from "lucide-react";
+import { ArrowLeft, Search, ChevronRight, Phone, User } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { billCategories } from "@/data/mockData";
 import { motion } from "framer-motion";
 import { useState } from "react";
 
+const savedContacts = [
+  { name: "Bivaan Gurung", phone: "+977 98XXXXXX91" },
+  { name: "Arun Sharma", phone: "+977 98XXXXXX12" },
+  { name: "Priya Thapa", phone: "+977 98XXXXXX34" },
+];
+
 const BillsPage = () => {
   const navigate = useNavigate();
   const [selectedBill, setSelectedBill] = useState<string | null>(null);
   const [customerId, setCustomerId] = useState("");
+  const [phoneNumber, setPhoneNumber] = useState("");
   const [showConfirm, setShowConfirm] = useState(false);
 
   const selected = billCategories.find((b) => b.id === selectedBill);
+  const isMobileTopup = selectedBill === "mobile";
 
   return (
     <div className="min-h-screen bg-background pb-24">
       <div className="flex items-center gap-3 px-5 pt-6">
-        <button onClick={() => selectedBill ? setSelectedBill(null) : navigate("/")} className="flex h-9 w-9 items-center justify-center rounded-xl bg-secondary">
+        <button onClick={() => selectedBill ? (setSelectedBill(null), setShowConfirm(false), setCustomerId(""), setPhoneNumber("")) : navigate("/")} className="flex h-9 w-9 items-center justify-center rounded-xl bg-secondary">
           <ArrowLeft className="h-4 w-4 text-foreground" />
         </button>
         <h1 className="font-display text-lg font-semibold">Bill Payments</h1>
@@ -23,7 +31,6 @@ const BillsPage = () => {
 
       {!selectedBill ? (
         <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="px-5 pt-5">
-          {/* Search */}
           <div className="flex items-center gap-2 rounded-xl bg-secondary px-3 py-2.5">
             <Search className="h-4 w-4 text-muted-foreground" />
             <input
@@ -32,7 +39,6 @@ const BillsPage = () => {
             />
           </div>
 
-          {/* Categories */}
           <div className="mt-6 grid grid-cols-2 gap-3">
             {billCategories.map((cat, i) => (
               <motion.button
@@ -67,25 +73,90 @@ const BillsPage = () => {
             </div>
           </div>
 
-          <div className="space-y-4">
-            <div>
-              <label className="text-xs font-medium text-muted-foreground">Customer ID / Meter No.</label>
-              <input
-                value={customerId}
-                onChange={(e) => setCustomerId(e.target.value)}
-                placeholder="Enter your customer ID"
-                className="mt-1.5 w-full rounded-xl bg-secondary px-4 py-3 text-sm text-foreground placeholder:text-muted-foreground outline-none ring-1 ring-transparent focus:ring-primary/50"
-              />
-            </div>
+          {isMobileTopup ? (
+            <div className="space-y-4">
+              <div>
+                <label className="text-xs font-medium text-muted-foreground">Phone Number</label>
+                <div className="mt-1.5 flex items-center gap-2 rounded-xl bg-secondary px-3 py-3">
+                  <Phone className="h-4 w-4 text-muted-foreground" />
+                  <input
+                    value={phoneNumber}
+                    onChange={(e) => setPhoneNumber(e.target.value)}
+                    placeholder="+977 98XXXXXXXX"
+                    className="flex-1 bg-transparent text-sm text-foreground placeholder:text-muted-foreground outline-none"
+                  />
+                </div>
+              </div>
 
-            <button
-              onClick={() => setShowConfirm(true)}
-              disabled={!customerId}
-              className="w-full rounded-xl bg-primary py-3.5 text-sm font-semibold text-primary-foreground transition-opacity disabled:opacity-40"
-            >
-              Fetch Bill Details
-            </button>
-          </div>
+              {/* Quick contacts */}
+              <div>
+                <label className="text-xs font-medium text-muted-foreground mb-2 block">Or select from contacts</label>
+                <div className="space-y-1.5">
+                  {savedContacts.map((c) => (
+                    <button
+                      key={c.phone}
+                      onClick={() => setPhoneNumber(c.phone)}
+                      className="flex w-full items-center gap-3 rounded-xl px-3 py-2.5 transition-colors hover:bg-secondary"
+                    >
+                      <div className="flex h-8 w-8 items-center justify-center rounded-full bg-primary/15">
+                        <User className="h-3.5 w-3.5 text-primary" />
+                      </div>
+                      <div className="text-left">
+                        <p className="text-sm font-medium text-foreground">{c.name}</p>
+                        <p className="text-xs text-muted-foreground">{c.phone}</p>
+                      </div>
+                    </button>
+                  ))}
+                </div>
+              </div>
+
+              {/* Amount presets */}
+              <div>
+                <label className="text-xs font-medium text-muted-foreground">Recharge Amount</label>
+                <div className="mt-2 grid grid-cols-4 gap-2">
+                  {[100, 200, 500, 1000].map((a) => (
+                    <button
+                      key={a}
+                      onClick={() => { setCustomerId(String(a)); }}
+                      className={`rounded-xl py-2.5 text-sm font-medium transition-colors ${
+                        customerId === String(a) ? "bg-primary text-primary-foreground" : "bg-secondary text-foreground"
+                      }`}
+                    >
+                      Rs.{a}
+                    </button>
+                  ))}
+                </div>
+              </div>
+
+              <button
+                onClick={() => setShowConfirm(true)}
+                disabled={!phoneNumber || !customerId}
+                className="w-full rounded-xl bg-primary py-3.5 text-sm font-semibold text-primary-foreground transition-opacity disabled:opacity-40"
+              >
+                Recharge Now
+              </button>
+            </div>
+          ) : (
+            <div className="space-y-4">
+              <div>
+                <label className="text-xs font-medium text-muted-foreground">Customer ID / Meter No.</label>
+                <input
+                  value={customerId}
+                  onChange={(e) => setCustomerId(e.target.value)}
+                  placeholder="Enter your customer ID"
+                  className="mt-1.5 w-full rounded-xl bg-secondary px-4 py-3 text-sm text-foreground placeholder:text-muted-foreground outline-none ring-1 ring-transparent focus:ring-primary/50"
+                />
+              </div>
+
+              <button
+                onClick={() => setShowConfirm(true)}
+                disabled={!customerId}
+                className="w-full rounded-xl bg-primary py-3.5 text-sm font-semibold text-primary-foreground transition-opacity disabled:opacity-40"
+              >
+                Fetch Bill Details
+              </button>
+            </div>
+          )}
         </motion.div>
       ) : (
         <motion.div initial={{ opacity: 0, y: 15 }} animate={{ opacity: 1, y: 0 }} className="px-5 pt-6">
@@ -94,22 +165,35 @@ const BillsPage = () => {
               <div className={`flex h-10 w-10 items-center justify-center rounded-xl ${selected?.color}`}>
                 <span className="text-lg">{selected?.icon}</span>
               </div>
-              <h3 className="font-display text-sm font-semibold">{selected?.name} Bill</h3>
+              <h3 className="font-display text-sm font-semibold">
+                {isMobileTopup ? "Mobile Recharge" : `${selected?.name} Bill`}
+              </h3>
             </div>
             <div className="space-y-3 text-sm">
-              <div className="flex justify-between"><span className="text-muted-foreground">Customer ID</span><span className="font-medium">{customerId}</span></div>
-              <div className="flex justify-between"><span className="text-muted-foreground">Bill Period</span><span className="font-medium">Feb 2026</span></div>
-              <div className="flex justify-between"><span className="text-muted-foreground">Due Date</span><span className="font-medium text-warning">Mar 15, 2026</span></div>
-              <div className="h-px bg-border" />
-              <div className="flex justify-between"><span className="text-muted-foreground">Amount Due</span><span className="font-display text-lg font-bold text-foreground">Rs. 2,340</span></div>
+              {isMobileTopup ? (
+                <>
+                  <div className="flex justify-between"><span className="text-muted-foreground">Phone</span><span className="font-medium">{phoneNumber}</span></div>
+                  <div className="flex justify-between"><span className="text-muted-foreground">Operator</span><span className="font-medium">Auto-detected</span></div>
+                  <div className="h-px bg-border" />
+                  <div className="flex justify-between"><span className="text-muted-foreground">Amount</span><span className="font-display text-lg font-bold text-foreground">Rs. {Number(customerId).toLocaleString()}</span></div>
+                </>
+              ) : (
+                <>
+                  <div className="flex justify-between"><span className="text-muted-foreground">Customer ID</span><span className="font-medium">{customerId}</span></div>
+                  <div className="flex justify-between"><span className="text-muted-foreground">Bill Period</span><span className="font-medium">Feb 2026</span></div>
+                  <div className="flex justify-between"><span className="text-muted-foreground">Due Date</span><span className="font-medium text-warning">Mar 15, 2026</span></div>
+                  <div className="h-px bg-border" />
+                  <div className="flex justify-between"><span className="text-muted-foreground">Amount Due</span><span className="font-display text-lg font-bold text-foreground">Rs. 2,340</span></div>
+                </>
+              )}
             </div>
           </div>
 
           <button
-            onClick={() => { setShowConfirm(false); setSelectedBill(null); setCustomerId(""); }}
+            onClick={() => { setShowConfirm(false); setSelectedBill(null); setCustomerId(""); setPhoneNumber(""); }}
             className="mt-4 w-full rounded-xl bg-primary py-3.5 text-sm font-semibold text-primary-foreground"
           >
-            Pay Rs. 2,340
+            {isMobileTopup ? `Recharge Rs. ${Number(customerId).toLocaleString()}` : "Pay Rs. 2,340"}
           </button>
         </motion.div>
       )}

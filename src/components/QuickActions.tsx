@@ -1,9 +1,9 @@
-import { Send, QrCode, Wifi, Receipt, ArrowDownLeft, ArrowUpRight } from "lucide-react";
+import { Send, QrCode, Wifi, Receipt, ArrowDownLeft, Settings } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { motion } from "framer-motion";
 
 const actions = [
-  { icon: Send, label: "Send", color: "bg-primary/15 text-primary", path: "/nfc" },
+  { icon: Send, label: "Send", color: "bg-primary/15 text-primary", path: "/send" },
   { icon: ArrowDownLeft, label: "Request", color: "bg-accent/15 text-accent", path: "/qr" },
   { icon: QrCode, label: "QR Pay", color: "bg-info/15 text-info", path: "/qr" },
   { icon: Receipt, label: "Bills", color: "bg-warning/15 text-warning", path: "/bills" },
