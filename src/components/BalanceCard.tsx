@@ -36,7 +36,7 @@ const BalanceCard = () => {
           <Plus className="h-3.5 w-3.5" />
           Add Money
         </button>
-        <p className="text-xs text-primary-foreground/60">•••• 4829</p>
+        <p className="text-xs text-primary-foreground/60">•••• 7291</p>
       </div>
     </motion.div>
   );

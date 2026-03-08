@@ -71,8 +71,8 @@ const QRPage = () => {
                 ))}
               </div>
             </div>
-            <h3 className="mt-4 font-display text-base font-semibold">Rajesh K.</h3>
-            <p className="text-xs text-muted-foreground">wallox://pay/rajesh-k-4829</p>
+            <h3 className="mt-4 font-display text-base font-semibold">Bivaan Gurung</h3>
+            <p className="text-xs text-muted-foreground">wallox://pay/bivaan-gurung-7291</p>
           </div>
           <p className="mt-4 text-center text-sm text-muted-foreground">
             Share this QR code to receive payments

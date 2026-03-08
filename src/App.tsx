@@ -9,6 +9,8 @@ import BillsPage from "@/pages/BillsPage";
 import QRPage from "@/pages/QRPage";
 import NFCPage from "@/pages/NFCPage";
 import HistoryPage from "@/pages/HistoryPage";
+import SendMoneyPage from "@/pages/SendMoneyPage";
+import SettingsPage from "@/pages/SettingsPage";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -26,6 +28,8 @@ const App = () => (
             <Route path="/qr" element={<QRPage />} />
             <Route path="/nfc" element={<NFCPage />} />
             <Route path="/history" element={<HistoryPage />} />
+            <Route path="/send" element={<SendMoneyPage />} />
+            <Route path="/settings" element={<SettingsPage />} />
             <Route path="*" element={<NotFound />} />
           </Routes>
           <BottomNav />

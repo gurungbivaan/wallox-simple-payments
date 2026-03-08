@@ -1,4 +1,4 @@
-import { Home, Receipt, QrCode, Wifi, Clock } from "lucide-react";
+import { Home, Receipt, QrCode, Wifi, Settings } from "lucide-react";
 import { useLocation, useNavigate } from "react-router-dom";
 import { motion } from "framer-motion";
 
@@ -7,7 +7,7 @@ const navItems = [
   { path: "/bills", icon: Receipt, label: "Bills" },
   { path: "/qr", icon: QrCode, label: "QR Pay" },
   { path: "/nfc", icon: Wifi, label: "NFC" },
-  { path: "/history", icon: Clock, label: "History" },
+  { path: "/settings", icon: Settings, label: "Settings" },
 ];
 
 const BottomNav = () => {

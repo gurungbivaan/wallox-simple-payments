@@ -19,7 +19,7 @@ const HomePage = () => {
           </div>
           <div>
             <p className="text-xs text-muted-foreground">Good Morning</p>
-            <h1 className="font-display text-base font-semibold text-foreground">Rajesh K.</h1>
+            <h1 className="font-display text-base font-semibold text-foreground">Bivaan Gurung</h1>
           </div>
         </div>
         <div className="flex items-center gap-2">
