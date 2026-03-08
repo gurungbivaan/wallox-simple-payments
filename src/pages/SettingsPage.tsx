@@ -133,6 +133,27 @@ const SettingsPage = () => {
         )}
       </motion.div>
 
+      {/* Theme toggle */}
+      <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.12 }} className="mx-5 mt-4">
+        <button
+          onClick={toggleTheme}
+          className="wallox-card flex w-full items-center gap-3 p-4 text-left transition-colors hover:bg-card-elevated"
+        >
+          {theme === "dark" ? (
+            <Sun className="h-5 w-5 text-warning" />
+          ) : (
+            <Moon className="h-5 w-5 text-primary" />
+          )}
+          <div className="flex-1">
+            <p className="text-sm font-medium text-foreground">Appearance</p>
+            <p className="text-xs text-muted-foreground">{theme === "dark" ? "Dark mode" : "Light mode"}</p>
+          </div>
+          <div className={`flex h-7 w-12 items-center rounded-full p-1 transition-colors ${theme === "light" ? "bg-primary" : "bg-secondary"}`}>
+            <div className={`h-5 w-5 rounded-full bg-primary-foreground shadow transition-transform ${theme === "light" ? "translate-x-5" : "translate-x-0"}`} />
+          </div>
+        </button>
+      </motion.div>
+
       {/* Settings items */}
       <div className="mx-5 mt-4 space-y-2">
         {settingsItems.map((item, i) => (
