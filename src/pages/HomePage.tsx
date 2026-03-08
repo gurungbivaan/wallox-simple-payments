@@ -42,8 +42,9 @@ const HomePage = () => {
             <span className="font-display text-sm font-bold text-primary">W</span>
           </div>
           <div>
-            <p className="text-xs text-muted-foreground">Good Morning</p>
-            <h1 className="font-display text-base font-semibold text-foreground">Bivaan Gurung</h1>
+            <p className="text-xs text-muted-foreground">{greeting}</p>
+            <h1 className="font-display text-base font-semibold text-foreground">{profile?.full_name ?? "Wallox User"}</h1>
+            <p className="text-[10px] font-mono text-muted-foreground/70">{profile?.wallox_id ?? ""}</p>
           </div>
         </div>
         <div className="flex items-center gap-2">
