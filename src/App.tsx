@@ -16,6 +16,10 @@ import HotelPage from "@/pages/HotelPage";
 import AuthPage from "@/pages/AuthPage";
 import KYCPage from "@/pages/KYCPage";
 import NotificationsPage from "@/pages/NotificationsPage";
+import ProfilePage from "@/pages/ProfilePage";
+import SecurityPage from "@/pages/SecurityPage";
+import LinkedAccountsPage from "@/pages/LinkedAccountsPage";
+import HelpPage from "@/pages/HelpPage";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -51,6 +55,10 @@ const ProtectedRoutes = () => {
         <Route path="/kyc" element={<KYCPage />} />
         <Route path="/hotels" element={<HotelPage />} />
         <Route path="/notifications" element={<NotificationsPage />} />
+        <Route path="/profile" element={<ProfilePage />} />
+        <Route path="/security" element={<SecurityPage />} />
+        <Route path="/linked-accounts" element={<LinkedAccountsPage />} />
+        <Route path="/help" element={<HelpPage />} />
         <Route path="*" element={<NotFound />} />
       </Routes>
       <BottomNav />

@@ -1,4 +1,4 @@
-import { ArrowLeft, ChevronRight, User, Shield, Bell, Globe, CreditCard, HelpCircle, LogOut, ArrowRightLeft, RefreshCw } from "lucide-react";
+import { ArrowLeft, ChevronRight, User, Shield, Bell, CreditCard, HelpCircle, LogOut, ArrowRightLeft, RefreshCw, Edit } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { motion } from "framer-motion";
 import { useState } from "react";
@@ -17,10 +17,10 @@ const exchangeRates = [
 
 const settingsItems = [
   { icon: User, label: "Profile & KYC", desc: "Verify your identity", color: "text-primary", path: "/kyc" },
-  { icon: Shield, label: "Security", desc: "PIN, biometrics, 2FA", color: "text-success", path: null },
-  { icon: CreditCard, label: "Linked Accounts", desc: "Bank accounts & cards", color: "text-accent", path: null },
+  { icon: Shield, label: "Security", desc: "PIN, biometrics, 2FA", color: "text-success", path: "/security" },
+  { icon: CreditCard, label: "Linked Accounts", desc: "Bank accounts & cards", color: "text-accent", path: "/linked-accounts" },
   { icon: Bell, label: "Notifications", desc: "Manage alerts", color: "text-warning", path: "/notifications" },
-  { icon: HelpCircle, label: "Help & Support", desc: "FAQs and contact", color: "text-info", path: null },
+  { icon: HelpCircle, label: "Help & Support", desc: "FAQs and contact", color: "text-info", path: "/help" },
 ];
 
 const SettingsPage = () => {
@@ -35,7 +35,7 @@ const SettingsPage = () => {
     queryFn: async () => {
       const { data } = await supabase
         .from("profiles")
-        .select("full_name, wallox_id, phone, kyc_verified")
+        .select("full_name, wallox_id, phone, kyc_verified, avatar_url")
         .eq("user_id", user!.id)
         .single();
       return data;
@@ -45,6 +45,7 @@ const SettingsPage = () => {
 
   const selectedRate = exchangeRates.find((r) => r.to === selectedCurrency);
   const converted = selectedRate ? (Number(convertAmount) * selectedRate.rate).toFixed(2) : "0";
+  const avatarInitial = profile?.full_name?.[0]?.toUpperCase() ?? "W";
 
   return (
     <div className="min-h-screen bg-background pb-24">
@@ -57,17 +58,21 @@ const SettingsPage = () => {
 
       {/* Profile card */}
       <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} className="mx-5 mt-5">
-        <div className="wallox-card flex items-center gap-3 p-4">
-          <div className="flex h-12 w-12 items-center justify-center rounded-full bg-primary/15">
-            <span className="font-display text-lg font-bold text-primary">B</span>
-          </div>
+        <button onClick={() => navigate("/profile")} className="wallox-card flex w-full items-center gap-3 p-4 text-left">
+          {profile?.avatar_url ? (
+            <img src={profile.avatar_url} alt="Avatar" className="h-12 w-12 rounded-full object-cover" />
+          ) : (
+            <div className="flex h-12 w-12 items-center justify-center rounded-full bg-primary/15">
+              <span className="font-display text-lg font-bold text-primary">{avatarInitial}</span>
+            </div>
+          )}
           <div className="flex-1">
             <h3 className="font-display text-base font-semibold">{profile?.full_name ?? "Wallox User"}</h3>
             <p className="text-[10px] font-mono text-muted-foreground/70">{profile?.wallox_id ?? ""}</p>
             <p className="text-xs text-muted-foreground">{profile?.phone ?? ""} {profile?.kyc_verified ? "• KYC Verified ✓" : ""}</p>
           </div>
-          <ChevronRight className="h-4 w-4 text-muted-foreground" />
-        </div>
+          <Edit className="h-4 w-4 text-muted-foreground" />
+        </button>
       </motion.div>
 
       {/* Currency Exchange */}
@@ -88,7 +93,6 @@ const SettingsPage = () => {
 
         {showExchange && (
           <motion.div initial={{ opacity: 0, height: 0 }} animate={{ opacity: 1, height: "auto" }} className="mt-2 overflow-hidden">
-            {/* Converter */}
             <div className="wallox-card p-4 mb-3">
               <div className="flex items-center gap-2 mb-3">
                 <RefreshCw className="h-3.5 w-3.5 text-primary" />
@@ -97,20 +101,13 @@ const SettingsPage = () => {
               <div className="flex items-center gap-3">
                 <div className="flex-1">
                   <label className="text-[10px] text-muted-foreground">NPR</label>
-                  <input
-                    type="number"
-                    value={convertAmount}
-                    onChange={(e) => setConvertAmount(e.target.value)}
-                    className="w-full bg-transparent font-display text-xl font-bold text-foreground outline-none"
-                  />
+                  <input type="number" value={convertAmount} onChange={(e) => setConvertAmount(e.target.value)}
+                    className="w-full bg-transparent font-display text-xl font-bold text-foreground outline-none" />
                 </div>
                 <ArrowRightLeft className="h-4 w-4 text-muted-foreground" />
                 <div className="flex-1 text-right">
-                  <select
-                    value={selectedCurrency}
-                    onChange={(e) => setSelectedCurrency(e.target.value)}
-                    className="bg-transparent text-[10px] text-muted-foreground outline-none"
-                  >
+                  <select value={selectedCurrency} onChange={(e) => setSelectedCurrency(e.target.value)}
+                    className="bg-transparent text-[10px] text-muted-foreground outline-none">
                     {exchangeRates.map((r) => (
                       <option key={r.to} value={r.to} className="bg-card text-foreground">{r.to}</option>
                     ))}
@@ -119,8 +116,6 @@ const SettingsPage = () => {
                 </div>
               </div>
             </div>
-
-            {/* Rates grid */}
             <div className="grid grid-cols-2 gap-2">
               {exchangeRates.map((rate) => (
                 <div key={rate.to} className="wallox-card flex items-center gap-2 p-3">
@@ -144,7 +139,7 @@ const SettingsPage = () => {
             initial={{ opacity: 0, y: 8 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.15 + i * 0.04 }}
-            onClick={() => item.path && navigate(item.path)}
+            onClick={() => navigate(item.path)}
             className="wallox-card flex w-full items-center gap-3 p-4 text-left transition-colors hover:bg-card-elevated"
           >
             <item.icon className={`h-5 w-5 ${item.color}`} />
