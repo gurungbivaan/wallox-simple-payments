@@ -2,6 +2,7 @@ import { ArrowLeft, ChevronRight, User, Shield, Bell, Globe, CreditCard, HelpCir
 import { useNavigate } from "react-router-dom";
 import { motion } from "framer-motion";
 import { useState } from "react";
+import { useAuth } from "@/contexts/AuthContext";
 
 const exchangeRates = [
   { from: "NPR", to: "USD", rate: 0.0075, flag: "🇺🇸" },
@@ -22,6 +23,7 @@ const settingsItems = [
 
 const SettingsPage = () => {
   const navigate = useNavigate();
+  const { signOut } = useAuth();
   const [showExchange, setShowExchange] = useState(false);
   const [convertAmount, setConvertAmount] = useState("1000");
   const [selectedCurrency, setSelectedCurrency] = useState("USD");
@@ -140,7 +142,7 @@ const SettingsPage = () => {
 
       {/* Logout */}
       <div className="mx-5 mt-6">
-        <button className="flex w-full items-center justify-center gap-2 rounded-xl bg-destructive/10 py-3 text-sm font-medium text-destructive">
+        <button onClick={signOut} className="flex w-full items-center justify-center gap-2 rounded-xl bg-destructive/10 py-3 text-sm font-medium text-destructive">
           <LogOut className="h-4 w-4" />
           Log Out
         </button>
