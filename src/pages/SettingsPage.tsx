@@ -1,8 +1,9 @@
-import { ArrowLeft, ChevronRight, User, Shield, Bell, CreditCard, HelpCircle, LogOut, ArrowRightLeft, RefreshCw, Edit } from "lucide-react";
+import { ArrowLeft, ChevronRight, User, Shield, Bell, CreditCard, HelpCircle, LogOut, ArrowRightLeft, RefreshCw, Edit, Sun, Moon } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { motion } from "framer-motion";
 import { useState } from "react";
 import { useAuth } from "@/contexts/AuthContext";
+import { useTheme } from "@/contexts/ThemeContext";
 import { supabase } from "@/integrations/supabase/client";
 import { useQuery } from "@tanstack/react-query";
 
@@ -26,6 +27,7 @@ const settingsItems = [
 const SettingsPage = () => {
   const navigate = useNavigate();
   const { signOut, user } = useAuth();
+  const { theme, toggleTheme } = useTheme();
   const [showExchange, setShowExchange] = useState(false);
   const [convertAmount, setConvertAmount] = useState("1000");
   const [selectedCurrency, setSelectedCurrency] = useState("USD");
@@ -129,6 +131,27 @@ const SettingsPage = () => {
             </div>
           </motion.div>
         )}
+      </motion.div>
+
+      {/* Theme toggle */}
+      <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.12 }} className="mx-5 mt-4">
+        <button
+          onClick={toggleTheme}
+          className="wallox-card flex w-full items-center gap-3 p-4 text-left transition-colors hover:bg-card-elevated"
+        >
+          {theme === "dark" ? (
+            <Sun className="h-5 w-5 text-warning" />
+          ) : (
+            <Moon className="h-5 w-5 text-primary" />
+          )}
+          <div className="flex-1">
+            <p className="text-sm font-medium text-foreground">Appearance</p>
+            <p className="text-xs text-muted-foreground">{theme === "dark" ? "Dark mode" : "Light mode"}</p>
+          </div>
+          <div className={`flex h-7 w-12 items-center rounded-full p-1 transition-colors ${theme === "light" ? "bg-primary" : "bg-secondary"}`}>
+            <div className={`h-5 w-5 rounded-full bg-primary-foreground shadow transition-transform ${theme === "light" ? "translate-x-5" : "translate-x-0"}`} />
+          </div>
+        </button>
       </motion.div>
 
       {/* Settings items */}
