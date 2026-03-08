@@ -8,11 +8,13 @@ import { useAuth } from "@/contexts/AuthContext";
 import { supabase } from "@/integrations/supabase/client";
 import { useQuery } from "@tanstack/react-query";
 import { useTransactions } from "@/hooks/use-wallet";
+import { useUnreadCount } from "@/hooks/use-notifications";
 import { formatDistanceToNow } from "date-fns";
 
 const HomePage = () => {
   const navigate = useNavigate();
   const { user } = useAuth();
+  const { data: unreadCount } = useUnreadCount();
 
   const { data: profile } = useQuery({
     queryKey: ["profile", user?.id],
@@ -72,9 +74,13 @@ const HomePage = () => {
           <button className="flex h-9 w-9 items-center justify-center rounded-xl bg-secondary">
             <Shield className="h-4 w-4 text-primary" />
           </button>
-          <button className="relative flex h-9 w-9 items-center justify-center rounded-xl bg-secondary">
+          <button onClick={() => navigate("/notifications")} className="relative flex h-9 w-9 items-center justify-center rounded-xl bg-secondary">
             <Bell className="h-4 w-4 text-muted-foreground" />
-            <span className="absolute right-1.5 top-1.5 h-2 w-2 rounded-full bg-destructive" />
+            {(unreadCount ?? 0) > 0 && (
+              <span className="absolute -right-0.5 -top-0.5 flex h-4 w-4 items-center justify-center rounded-full bg-destructive text-[9px] font-bold text-destructive-foreground">
+                {unreadCount! > 9 ? "9+" : unreadCount}
+              </span>
+            )}
           </button>
         </div>
       </div>
