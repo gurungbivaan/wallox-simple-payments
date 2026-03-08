@@ -3,6 +3,7 @@ import { useNavigate } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import { motion, AnimatePresence } from "framer-motion";
 import { Mail, Phone, Lock, User, Eye, EyeOff, ArrowRight, Fingerprint } from "lucide-react";
+import walloxLogo from "@/assets/wallox-logo.png";
 import { useToast } from "@/hooks/use-toast";
 
 type AuthMode = "login" | "signup";
