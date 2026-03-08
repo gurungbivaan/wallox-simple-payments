@@ -11,6 +11,7 @@ import NFCPage from "@/pages/NFCPage";
 import HistoryPage from "@/pages/HistoryPage";
 import SendMoneyPage from "@/pages/SendMoneyPage";
 import SettingsPage from "@/pages/SettingsPage";
+import HotelPage from "@/pages/HotelPage";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
