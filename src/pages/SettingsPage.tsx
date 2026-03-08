@@ -142,7 +142,7 @@ const SettingsPage = () => {
 
       {/* Logout */}
       <div className="mx-5 mt-6">
-        <button className="flex w-full items-center justify-center gap-2 rounded-xl bg-destructive/10 py-3 text-sm font-medium text-destructive">
+        <button onClick={signOut} className="flex w-full items-center justify-center gap-2 rounded-xl bg-destructive/10 py-3 text-sm font-medium text-destructive">
           <LogOut className="h-4 w-4" />
           Log Out
         </button>
