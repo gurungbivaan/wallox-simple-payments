@@ -5,9 +5,33 @@ import TransactionItem from "@/components/TransactionItem";
 import { recentTransactions } from "@/data/mockData";
 import { motion } from "framer-motion";
 import { useNavigate } from "react-router-dom";
+import { useAuth } from "@/contexts/AuthContext";
+import { supabase } from "@/integrations/supabase/client";
+import { useQuery } from "@tanstack/react-query";
 
 const HomePage = () => {
   const navigate = useNavigate();
+  const { user } = useAuth();
+
+  const { data: profile } = useQuery({
+    queryKey: ["profile", user?.id],
+    queryFn: async () => {
+      const { data } = await supabase
+        .from("profiles")
+        .select("full_name, wallox_id")
+        .eq("user_id", user!.id)
+        .single();
+      return data;
+    },
+    enabled: !!user?.id,
+  });
+
+  const greeting = (() => {
+    const h = new Date().getHours();
+    if (h < 12) return "Good Morning";
+    if (h < 17) return "Good Afternoon";
+    return "Good Evening";
+  })();
 
   return (
     <div className="min-h-screen bg-background pb-24">
@@ -18,8 +42,9 @@ const HomePage = () => {
             <span className="font-display text-sm font-bold text-primary">W</span>
           </div>
           <div>
-            <p className="text-xs text-muted-foreground">Good Morning</p>
-            <h1 className="font-display text-base font-semibold text-foreground">Bivaan Gurung</h1>
+            <p className="text-xs text-muted-foreground">{greeting}</p>
+            <h1 className="font-display text-base font-semibold text-foreground">{profile?.full_name ?? "Wallox User"}</h1>
+            <p className="text-[10px] font-mono text-muted-foreground/70">{profile?.wallox_id ?? ""}</p>
           </div>
         </div>
         <div className="flex items-center gap-2">

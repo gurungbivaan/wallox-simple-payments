@@ -3,6 +3,8 @@ import { useNavigate } from "react-router-dom";
 import { motion } from "framer-motion";
 import { useState } from "react";
 import { useAuth } from "@/contexts/AuthContext";
+import { supabase } from "@/integrations/supabase/client";
+import { useQuery } from "@tanstack/react-query";
 
 const exchangeRates = [
   { from: "NPR", to: "USD", rate: 0.0075, flag: "🇺🇸" },
@@ -23,10 +25,23 @@ const settingsItems = [
 
 const SettingsPage = () => {
   const navigate = useNavigate();
-  const { signOut } = useAuth();
+  const { signOut, user } = useAuth();
   const [showExchange, setShowExchange] = useState(false);
   const [convertAmount, setConvertAmount] = useState("1000");
   const [selectedCurrency, setSelectedCurrency] = useState("USD");
+
+  const { data: profile } = useQuery({
+    queryKey: ["profile", user?.id],
+    queryFn: async () => {
+      const { data } = await supabase
+        .from("profiles")
+        .select("full_name, wallox_id, phone, kyc_verified")
+        .eq("user_id", user!.id)
+        .single();
+      return data;
+    },
+    enabled: !!user?.id,
+  });
 
   const selectedRate = exchangeRates.find((r) => r.to === selectedCurrency);
   const converted = selectedRate ? (Number(convertAmount) * selectedRate.rate).toFixed(2) : "0";
@@ -47,8 +62,9 @@ const SettingsPage = () => {
             <span className="font-display text-lg font-bold text-primary">B</span>
           </div>
           <div className="flex-1">
-            <h3 className="font-display text-base font-semibold">Bivaan Gurung</h3>
-            <p className="text-xs text-muted-foreground">+977 98XXXXXX91 • KYC Verified ✓</p>
+            <h3 className="font-display text-base font-semibold">{profile?.full_name ?? "Wallox User"}</h3>
+            <p className="text-[10px] font-mono text-muted-foreground/70">{profile?.wallox_id ?? ""}</p>
+            <p className="text-xs text-muted-foreground">{profile?.phone ?? ""} {profile?.kyc_verified ? "• KYC Verified ✓" : ""}</p>
           </div>
           <ChevronRight className="h-4 w-4 text-muted-foreground" />
         </div>
