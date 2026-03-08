@@ -2,6 +2,7 @@ import { ArrowLeft, ChevronRight, User, Shield, Bell, Globe, CreditCard, HelpCir
 import { useNavigate } from "react-router-dom";
 import { motion } from "framer-motion";
 import { useState } from "react";
+import { useAuth } from "@/contexts/AuthContext";
 
 const exchangeRates = [
   { from: "NPR", to: "USD", rate: 0.0075, flag: "🇺🇸" },
