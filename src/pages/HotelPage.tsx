@@ -2,6 +2,7 @@ import { ArrowLeft, Star, MapPin, Calendar, Users, Search, ChevronRight } from "
 import { useNavigate } from "react-router-dom";
 import { motion } from "framer-motion";
 import { useState } from "react";
+import PinVerification from "@/components/PinVerification";
 
 const hotels = [
   { id: "1", name: "Hotel Yak & Yeti", location: "Durbar Marg, Kathmandu", rating: 4.8, price: 12500, image: "🏨", rooms: "Deluxe, Suite, Premium" },
@@ -27,6 +28,7 @@ const HotelPage = () => {
   const [guests, setGuests] = useState("2");
   const [selectedRoom, setSelectedRoom] = useState("Standard");
   const [showConfirm, setShowConfirm] = useState(false);
+  const [showVerify, setShowVerify] = useState(false);
   const [bookingDone, setBookingDone] = useState(false);
 
   const filtered = hotels.filter((h) =>
@@ -40,6 +42,7 @@ const HotelPage = () => {
   const resetFlow = () => {
     setSelectedHotel(null);
     setShowConfirm(false);
+    setShowVerify(false);
     setBookingDone(false);
     setCheckIn("");
     setCheckOut("");
@@ -51,7 +54,11 @@ const HotelPage = () => {
     <div className="min-h-screen bg-background pb-24">
       <div className="flex items-center gap-3 px-5 pt-6">
         <button
-          onClick={() => (selectedHotel && !bookingDone ? (showConfirm ? setShowConfirm(false) : setSelectedHotel(null)) : navigate("/"))}
+          onClick={() => {
+            if (showVerify) setShowVerify(false);
+            else if (selectedHotel && !bookingDone) showConfirm ? setShowConfirm(false) : setSelectedHotel(null);
+            else navigate("/");
+          }}
           className="flex h-9 w-9 items-center justify-center rounded-xl bg-secondary"
         >
           <ArrowLeft className="h-4 w-4 text-foreground" />
@@ -90,6 +97,18 @@ const HotelPage = () => {
             Done
           </button>
         </motion.div>
+      ) : showVerify ? (
+        <PinVerification
+          summaryItems={[
+            { label: "Hotel", value: selectedHotel?.name || "" },
+            { label: "Room", value: selectedRoom },
+            { label: "Check-in", value: checkIn },
+            { label: "Check-out", value: checkOut },
+            { label: "Amount", value: `Rs. ${totalPrice.toLocaleString()}` },
+          ]}
+          onSuccess={() => { setShowVerify(false); setBookingDone(true); }}
+          onCancel={() => setShowVerify(false)}
+        />
       ) : !selectedHotel ? (
         <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="px-5 pt-5">
           <div className="flex items-center gap-2 rounded-xl bg-secondary px-3 py-2.5">
@@ -253,7 +272,7 @@ const HotelPage = () => {
             </div>
           </div>
           <button
-            onClick={() => setBookingDone(true)}
+            onClick={() => setShowVerify(true)}
             className="mt-4 w-full rounded-xl bg-primary py-3.5 text-sm font-semibold text-primary-foreground"
           >
             Pay Rs. {totalPrice.toLocaleString()} & Book

@@ -3,6 +3,7 @@ import { useNavigate } from "react-router-dom";
 import { billCategories } from "@/data/mockData";
 import { motion } from "framer-motion";
 import { useState } from "react";
+import PinVerification from "@/components/PinVerification";
 
 const savedContacts = [
   { name: "Bivaan Gurung", phone: "+977 98XXXXXX91" },
@@ -16,20 +17,69 @@ const BillsPage = () => {
   const [customerId, setCustomerId] = useState("");
   const [phoneNumber, setPhoneNumber] = useState("");
   const [showConfirm, setShowConfirm] = useState(false);
+  const [showVerify, setShowVerify] = useState(false);
+  const [showSuccess, setShowSuccess] = useState(false);
 
   const selected = billCategories.find((b) => b.id === selectedBill);
   const isMobileTopup = selectedBill === "mobile";
 
+  const paymentAmount = isMobileTopup ? `Rs. ${Number(customerId).toLocaleString()}` : "Rs. 2,340";
+
+  const resetAll = () => {
+    setShowConfirm(false);
+    setShowVerify(false);
+    setShowSuccess(false);
+    setSelectedBill(null);
+    setCustomerId("");
+    setPhoneNumber("");
+  };
+
   return (
     <div className="min-h-screen bg-background pb-24">
       <div className="flex items-center gap-3 px-5 pt-6">
-        <button onClick={() => selectedBill ? (setSelectedBill(null), setShowConfirm(false), setCustomerId(""), setPhoneNumber("")) : navigate("/")} className="flex h-9 w-9 items-center justify-center rounded-xl bg-secondary">
+        <button
+          onClick={() => {
+            if (showVerify) { setShowVerify(false); }
+            else if (showConfirm) { setShowConfirm(false); }
+            else if (selectedBill) { setSelectedBill(null); setCustomerId(""); setPhoneNumber(""); }
+            else navigate("/");
+          }}
+          className="flex h-9 w-9 items-center justify-center rounded-xl bg-secondary"
+        >
           <ArrowLeft className="h-4 w-4 text-foreground" />
         </button>
         <h1 className="font-display text-lg font-semibold">Bill Payments</h1>
       </div>
 
-      {!selectedBill ? (
+      {showSuccess ? (
+        <motion.div initial={{ opacity: 0, scale: 0.8 }} animate={{ opacity: 1, scale: 1 }} className="flex flex-col items-center px-5 pt-16">
+          <motion.div
+            initial={{ scale: 0 }}
+            animate={{ scale: 1 }}
+            transition={{ type: "spring", bounce: 0.5 }}
+            className="flex h-20 w-20 items-center justify-center rounded-full bg-primary"
+          >
+            <span className="text-3xl text-primary-foreground">✓</span>
+          </motion.div>
+          <h3 className="mt-6 font-display text-xl font-bold">Payment Successful!</h3>
+          <p className="mt-2 text-sm text-muted-foreground">
+            {paymentAmount} paid for {isMobileTopup ? "Mobile Recharge" : selected?.name}
+          </p>
+          <button onClick={resetAll} className="mt-8 rounded-xl bg-secondary px-8 py-3 text-sm font-medium text-foreground">
+            Done
+          </button>
+        </motion.div>
+      ) : showVerify ? (
+        <PinVerification
+          summaryItems={[
+            { label: "Service", value: isMobileTopup ? "Mobile Recharge" : selected?.name || "" },
+            ...(isMobileTopup ? [{ label: "Phone", value: phoneNumber }] : [{ label: "Customer ID", value: customerId }]),
+            { label: "Amount", value: paymentAmount },
+          ]}
+          onSuccess={() => { setShowVerify(false); setShowSuccess(true); }}
+          onCancel={() => setShowVerify(false)}
+        />
+      ) : !selectedBill ? (
         <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="px-5 pt-5">
           <div className="flex items-center gap-2 rounded-xl bg-secondary px-3 py-2.5">
             <Search className="h-4 w-4 text-muted-foreground" />
@@ -88,7 +138,6 @@ const BillsPage = () => {
                 </div>
               </div>
 
-              {/* Quick contacts */}
               <div>
                 <label className="text-xs font-medium text-muted-foreground mb-2 block">Or select from contacts</label>
                 <div className="space-y-1.5">
@@ -110,14 +159,13 @@ const BillsPage = () => {
                 </div>
               </div>
 
-              {/* Amount presets */}
               <div>
                 <label className="text-xs font-medium text-muted-foreground">Recharge Amount</label>
                 <div className="mt-2 grid grid-cols-4 gap-2">
                   {[100, 200, 500, 1000].map((a) => (
                     <button
                       key={a}
-                      onClick={() => { setCustomerId(String(a)); }}
+                      onClick={() => setCustomerId(String(a))}
                       className={`rounded-xl py-2.5 text-sm font-medium transition-colors ${
                         customerId === String(a) ? "bg-primary text-primary-foreground" : "bg-secondary text-foreground"
                       }`}
@@ -190,7 +238,7 @@ const BillsPage = () => {
           </div>
 
           <button
-            onClick={() => { setShowConfirm(false); setSelectedBill(null); setCustomerId(""); setPhoneNumber(""); }}
+            onClick={() => setShowVerify(true)}
             className="mt-4 w-full rounded-xl bg-primary py-3.5 text-sm font-semibold text-primary-foreground"
           >
             {isMobileTopup ? `Recharge Rs. ${Number(customerId).toLocaleString()}` : "Pay Rs. 2,340"}
