@@ -15,6 +15,7 @@ import SettingsPage from "@/pages/SettingsPage";
 import HotelPage from "@/pages/HotelPage";
 import AuthPage from "@/pages/AuthPage";
 import KYCPage from "@/pages/KYCPage";
+import NotificationsPage from "@/pages/NotificationsPage";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -49,6 +50,7 @@ const ProtectedRoutes = () => {
         <Route path="/settings" element={<SettingsPage />} />
         <Route path="/kyc" element={<KYCPage />} />
         <Route path="/hotels" element={<HotelPage />} />
+        <Route path="/notifications" element={<NotificationsPage />} />
         <Route path="*" element={<NotFound />} />
       </Routes>
       <BottomNav />
