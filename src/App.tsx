@@ -14,6 +14,7 @@ import SendMoneyPage from "@/pages/SendMoneyPage";
 import SettingsPage from "@/pages/SettingsPage";
 import HotelPage from "@/pages/HotelPage";
 import AuthPage from "@/pages/AuthPage";
+import KYCPage from "@/pages/KYCPage";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
