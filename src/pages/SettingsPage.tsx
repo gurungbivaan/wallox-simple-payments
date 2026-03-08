@@ -25,10 +25,23 @@ const settingsItems = [
 
 const SettingsPage = () => {
   const navigate = useNavigate();
-  const { signOut } = useAuth();
+  const { signOut, user } = useAuth();
   const [showExchange, setShowExchange] = useState(false);
   const [convertAmount, setConvertAmount] = useState("1000");
   const [selectedCurrency, setSelectedCurrency] = useState("USD");
+
+  const { data: profile } = useQuery({
+    queryKey: ["profile", user?.id],
+    queryFn: async () => {
+      const { data } = await supabase
+        .from("profiles")
+        .select("full_name, wallox_id, phone, kyc_verified")
+        .eq("user_id", user!.id)
+        .single();
+      return data;
+    },
+    enabled: !!user?.id,
+  });
 
   const selectedRate = exchangeRates.find((r) => r.to === selectedCurrency);
   const converted = selectedRate ? (Number(convertAmount) * selectedRate.rate).toFixed(2) : "0";
