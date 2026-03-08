@@ -62,8 +62,9 @@ const SettingsPage = () => {
             <span className="font-display text-lg font-bold text-primary">B</span>
           </div>
           <div className="flex-1">
-            <h3 className="font-display text-base font-semibold">Bivaan Gurung</h3>
-            <p className="text-xs text-muted-foreground">+977 98XXXXXX91 • KYC Verified ✓</p>
+            <h3 className="font-display text-base font-semibold">{profile?.full_name ?? "Wallox User"}</h3>
+            <p className="text-[10px] font-mono text-muted-foreground/70">{profile?.wallox_id ?? ""}</p>
+            <p className="text-xs text-muted-foreground">{profile?.phone ?? ""} {profile?.kyc_verified ? "• KYC Verified ✓" : ""}</p>
           </div>
           <ChevronRight className="h-4 w-4 text-muted-foreground" />
         </div>
