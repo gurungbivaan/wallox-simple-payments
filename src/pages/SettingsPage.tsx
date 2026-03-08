@@ -1,8 +1,9 @@
-import { ArrowLeft, ChevronRight, User, Shield, Bell, CreditCard, HelpCircle, LogOut, ArrowRightLeft, RefreshCw, Edit } from "lucide-react";
+import { ArrowLeft, ChevronRight, User, Shield, Bell, CreditCard, HelpCircle, LogOut, ArrowRightLeft, RefreshCw, Edit, Sun, Moon } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { motion } from "framer-motion";
 import { useState } from "react";
 import { useAuth } from "@/contexts/AuthContext";
+import { useTheme } from "@/contexts/ThemeContext";
 import { supabase } from "@/integrations/supabase/client";
 import { useQuery } from "@tanstack/react-query";
 
