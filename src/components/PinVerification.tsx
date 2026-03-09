@@ -1,4 +1,4 @@
-import { Fingerprint, ShieldCheck, Delete } from "lucide-react";
+import { Fingerprint, ShieldCheck, Delete, ScanFace } from "lucide-react";
 import { motion } from "framer-motion";
 import { useState } from "react";
 
