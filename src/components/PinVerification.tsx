@@ -132,18 +132,32 @@ const PinVerification = ({ title = "Enter Transaction PIN", summaryItems, onSucc
         </button>
       </div>
 
-      {/* Biometric option */}
+      {/* Biometric options */}
       <div className="mt-6 flex flex-col items-center">
         <div className="h-px w-full bg-border mb-4" />
         <p className="text-xs text-muted-foreground mb-3">Or use biometrics</p>
-        <button
-          onClick={handleBiometric}
-          disabled={verifying}
-          className="flex h-16 w-16 items-center justify-center rounded-full bg-primary/10 transition-colors active:bg-primary/20 disabled:opacity-50"
-        >
-          <Fingerprint className="h-8 w-8 text-primary" />
-        </button>
-        <p className="mt-2 text-[11px] text-muted-foreground">Touch to verify</p>
+        <div className="flex items-center gap-6">
+          <button
+            onClick={handleBiometric}
+            disabled={verifying}
+            className="flex flex-col items-center gap-1.5 disabled:opacity-50"
+          >
+            <div className="flex h-14 w-14 items-center justify-center rounded-full bg-primary/10 transition-colors active:bg-primary/20">
+              <Fingerprint className="h-7 w-7 text-primary" />
+            </div>
+            <p className="text-[10px] text-muted-foreground">Fingerprint</p>
+          </button>
+          <button
+            onClick={handleBiometric}
+            disabled={verifying}
+            className="flex flex-col items-center gap-1.5 disabled:opacity-50"
+          >
+            <div className="flex h-14 w-14 items-center justify-center rounded-full bg-primary/10 transition-colors active:bg-primary/20">
+              <ScanFace className="h-7 w-7 text-primary" />
+            </div>
+            <p className="text-[10px] text-muted-foreground">Face ID</p>
+          </button>
+        </div>
       </div>
 
       {/* Cancel */}
