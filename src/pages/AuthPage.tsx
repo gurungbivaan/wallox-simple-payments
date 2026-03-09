@@ -247,6 +247,53 @@ const AuthPage = () => {
             </>
           )}
         </button>
+
+        {/* Biometric Login */}
+        {mode === "login" && (
+          <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.2 }} className="pt-2">
+            <div className="flex items-center gap-3 mb-4">
+              <div className="h-px flex-1 bg-border" />
+              <span className="text-xs text-muted-foreground">Or sign in with</span>
+              <div className="h-px flex-1 bg-border" />
+            </div>
+            <div className="flex justify-center gap-5">
+              <button
+                type="button"
+                onClick={() => {
+                  setLoading(true);
+                  setTimeout(() => {
+                    toast({ title: "Biometric Login", description: "Fingerprint recognized. Signing in..." });
+                    setLoading(false);
+                  }, 1500);
+                }}
+                disabled={loading}
+                className="flex flex-col items-center gap-2 disabled:opacity-50"
+              >
+                <div className="flex h-14 w-14 items-center justify-center rounded-2xl bg-secondary transition-colors active:bg-primary/20">
+                  <Fingerprint className="h-7 w-7 text-primary" />
+                </div>
+                <span className="text-[10px] font-medium text-muted-foreground">Fingerprint</span>
+              </button>
+              <button
+                type="button"
+                onClick={() => {
+                  setLoading(true);
+                  setTimeout(() => {
+                    toast({ title: "Biometric Login", description: "Face recognized. Signing in..." });
+                    setLoading(false);
+                  }, 1500);
+                }}
+                disabled={loading}
+                className="flex flex-col items-center gap-2 disabled:opacity-50"
+              >
+                <div className="flex h-14 w-14 items-center justify-center rounded-2xl bg-secondary transition-colors active:bg-primary/20">
+                  <ScanFace className="h-7 w-7 text-primary" />
+                </div>
+                <span className="text-[10px] font-medium text-muted-foreground">Face ID</span>
+              </button>
+            </div>
+          </motion.div>
+        )}
       </form>
 
       {/* Footer */}
