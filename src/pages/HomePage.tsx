@@ -10,6 +10,7 @@ import { useQuery } from "@tanstack/react-query";
 import { useTransactions } from "@/hooks/use-wallet";
 import { useUnreadCount } from "@/hooks/use-notifications";
 import { formatDistanceToNow } from "date-fns";
+import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
 
 const HomePage = () => {
   const navigate = useNavigate();
