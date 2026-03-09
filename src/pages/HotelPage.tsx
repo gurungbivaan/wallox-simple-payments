@@ -187,9 +187,13 @@ const HotelPage = () => {
               <div className="mt-2 space-y-2">
                 {roomTypes.map((room) => (
                   <button key={room.type} onClick={() => setSelectedRoom(room.type)}
-                    className={`flex w-full items-center justify-between rounded-xl px-4 py-3 transition-colors ${selectedRoom === room.type ? "bg-primary/15 ring-1 ring-primary/50" : "bg-secondary"}`}>
-                    <span className="text-sm font-medium text-foreground">{room.type}</span>
-                    <span className="text-xs text-muted-foreground">{room.label}</span>
+                    className={`flex w-full items-center gap-3 rounded-xl p-2.5 text-left transition-colors ${selectedRoom === room.type ? "bg-primary/15 ring-1 ring-primary/50" : "bg-secondary"}`}>
+                    <img src={room.image} alt={room.type} className="h-14 w-20 rounded-lg object-cover flex-shrink-0" />
+                    <div className="flex-1 min-w-0">
+                      <span className="text-sm font-medium text-foreground">{room.type}</span>
+                      <p className="text-xs text-muted-foreground mt-0.5">{room.desc}</p>
+                    </div>
+                    <span className="text-xs text-muted-foreground flex-shrink-0">{room.label}</span>
                   </button>
                 ))}
               </div>
