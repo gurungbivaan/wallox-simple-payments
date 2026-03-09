@@ -5,13 +5,20 @@ import { useState } from "react";
 import PinVerification from "@/components/PinVerification";
 import { usePayment } from "@/hooks/use-wallet";
 
+import hotelYakYeti from "@/assets/hotels/hotel-yak-yeti.jpg";
+import hotelHyatt from "@/assets/hotels/hotel-hyatt.jpg";
+import hotelSoaltee from "@/assets/hotels/hotel-soaltee.jpg";
+import hotelShanker from "@/assets/hotels/hotel-shanker.jpg";
+import hotelDwarikas from "@/assets/hotels/hotel-dwarikas.jpg";
+import hotelTempleTree from "@/assets/hotels/hotel-temple-tree.jpg";
+
 const hotels = [
-  { id: "1", name: "Hotel Yak & Yeti", location: "Durbar Marg, Kathmandu", rating: 4.8, price: 12500, image: "🏨", rooms: "Deluxe, Suite, Premium" },
-  { id: "2", name: "Hyatt Regency", location: "Bouddha, Kathmandu", rating: 4.7, price: 15000, image: "🏩", rooms: "Standard, Deluxe, Suite" },
-  { id: "3", name: "Soaltee Crowne Plaza", location: "Tahachal, Kathmandu", rating: 4.6, price: 11000, image: "🏛️", rooms: "Classic, Premium, Royal" },
-  { id: "4", name: "Hotel Shanker", location: "Lazimpat, Kathmandu", rating: 4.5, price: 8500, image: "🏰", rooms: "Heritage, Deluxe, Suite" },
-  { id: "5", name: "Dwarika's Hotel", location: "Battisputali, Kathmandu", rating: 4.9, price: 18000, image: "✨", rooms: "Heritage, Royal, Presidential" },
-  { id: "6", name: "Temple Tree Resort", location: "Lakeside, Pokhara", rating: 4.6, price: 9500, image: "🌿", rooms: "Garden, Lake View, Suite" },
+  { id: "1", name: "Hotel Yak & Yeti", location: "Durbar Marg, Kathmandu", rating: 4.8, price: 12500, image: hotelYakYeti, rooms: "Deluxe, Suite, Premium" },
+  { id: "2", name: "Hyatt Regency", location: "Bouddha, Kathmandu", rating: 4.7, price: 15000, image: hotelHyatt, rooms: "Standard, Deluxe, Suite" },
+  { id: "3", name: "Soaltee Crowne Plaza", location: "Tahachal, Kathmandu", rating: 4.6, price: 11000, image: hotelSoaltee, rooms: "Classic, Premium, Royal" },
+  { id: "4", name: "Hotel Shanker", location: "Lazimpat, Kathmandu", rating: 4.5, price: 8500, image: hotelShanker, rooms: "Heritage, Deluxe, Suite" },
+  { id: "5", name: "Dwarika's Hotel", location: "Battisputali, Kathmandu", rating: 4.9, price: 18000, image: hotelDwarikas, rooms: "Heritage, Royal, Presidential" },
+  { id: "6", name: "Temple Tree Resort", location: "Lakeside, Pokhara", rating: 4.6, price: 9500, image: hotelTempleTree, rooms: "Garden, Lake View, Suite" },
 ];
 
 const roomTypes = [
@@ -123,8 +130,8 @@ const HotelPage = () => {
             {filtered.map((hotel, i) => (
               <motion.button key={hotel.id} initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: i * 0.05 }}
                 onClick={() => setSelectedHotel(hotel)}
-                className="wallox-card flex w-full items-center gap-3 p-4 text-left transition-colors hover:bg-card-elevated">
-                <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-primary/10 text-2xl">{hotel.image}</div>
+                className="wallox-card flex w-full items-center gap-3 p-3 text-left transition-colors hover:bg-card-elevated overflow-hidden">
+                <img src={hotel.image} alt={hotel.name} className="h-16 w-20 rounded-xl object-cover flex-shrink-0" />
                 <div className="flex-1 min-w-0">
                   <p className="text-sm font-semibold text-foreground">{hotel.name}</p>
                   <div className="flex items-center gap-1 mt-0.5"><MapPin className="h-3 w-3 text-muted-foreground" /><p className="text-xs text-muted-foreground truncate">{hotel.location}</p></div>
@@ -133,19 +140,23 @@ const HotelPage = () => {
                     <span className="text-xs text-primary font-semibold">Rs. {hotel.price.toLocaleString()}/night</span>
                   </div>
                 </div>
-                <ChevronRight className="h-4 w-4 text-muted-foreground" />
+                <ChevronRight className="h-4 w-4 text-muted-foreground flex-shrink-0" />
               </motion.button>
             ))}
           </div>
         </motion.div>
       ) : !showConfirm ? (
         <motion.div initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} className="px-5 pt-6">
-          <div className="flex items-center gap-3 mb-6">
-            <div className="flex h-14 w-14 items-center justify-center rounded-xl bg-primary/10 text-3xl">{selectedHotel.image}</div>
-            <div>
-              <h2 className="font-display text-base font-semibold">{selectedHotel.name}</h2>
-              <div className="flex items-center gap-1"><MapPin className="h-3 w-3 text-muted-foreground" /><p className="text-xs text-muted-foreground">{selectedHotel.location}</p></div>
-              <div className="flex items-center gap-0.5 mt-0.5"><Star className="h-3 w-3 fill-warning text-warning" /><span className="text-xs font-medium">{selectedHotel.rating}</span></div>
+          {/* Hotel hero image */}
+          <div className="relative rounded-2xl overflow-hidden mb-5">
+            <img src={selectedHotel.image} alt={selectedHotel.name} className="w-full h-44 object-cover" />
+            <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent" />
+            <div className="absolute bottom-3 left-4 right-4">
+              <h2 className="font-display text-lg font-bold text-white">{selectedHotel.name}</h2>
+              <div className="flex items-center gap-2 mt-1">
+                <div className="flex items-center gap-1"><MapPin className="h-3 w-3 text-white/80" /><p className="text-xs text-white/80">{selectedHotel.location}</p></div>
+                <div className="flex items-center gap-0.5"><Star className="h-3 w-3 fill-warning text-warning" /><span className="text-xs font-medium text-white">{selectedHotel.rating}</span></div>
+              </div>
             </div>
           </div>
           <div className="space-y-4">
@@ -192,18 +203,18 @@ const HotelPage = () => {
         </motion.div>
       ) : (
         <motion.div initial={{ opacity: 0, y: 15 }} animate={{ opacity: 1, y: 0 }} className="px-5 pt-6">
-          <div className="wallox-card p-5">
-            <div className="flex items-center gap-3 mb-4">
-              <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-primary/10 text-lg">{selectedHotel.image}</div>
+          <div className="wallox-card overflow-hidden">
+            <img src={selectedHotel.image} alt={selectedHotel.name} className="w-full h-32 object-cover" />
+            <div className="p-5">
               <h3 className="font-display text-sm font-semibold">{selectedHotel.name}</h3>
-            </div>
-            <div className="space-y-3 text-sm">
-              <div className="flex justify-between"><span className="text-muted-foreground">Room</span><span className="font-medium">{selectedRoom}</span></div>
-              <div className="flex justify-between"><span className="text-muted-foreground">Check-in</span><span className="font-medium">{checkIn}</span></div>
-              <div className="flex justify-between"><span className="text-muted-foreground">Check-out</span><span className="font-medium">{checkOut}</span></div>
-              <div className="flex justify-between"><span className="text-muted-foreground">Guests</span><span className="font-medium">{guests}</span></div>
-              <div className="h-px bg-border" />
-              <div className="flex justify-between"><span className="text-muted-foreground">Total</span><span className="font-display text-lg font-bold text-foreground">Rs. {totalPrice.toLocaleString()}</span></div>
+              <div className="mt-3 space-y-3 text-sm">
+                <div className="flex justify-between"><span className="text-muted-foreground">Room</span><span className="font-medium">{selectedRoom}</span></div>
+                <div className="flex justify-between"><span className="text-muted-foreground">Check-in</span><span className="font-medium">{checkIn}</span></div>
+                <div className="flex justify-between"><span className="text-muted-foreground">Check-out</span><span className="font-medium">{checkOut}</span></div>
+                <div className="flex justify-between"><span className="text-muted-foreground">Guests</span><span className="font-medium">{guests}</span></div>
+                <div className="h-px bg-border" />
+                <div className="flex justify-between"><span className="text-muted-foreground">Total</span><span className="font-display text-lg font-bold text-foreground">Rs. {totalPrice.toLocaleString()}</span></div>
+              </div>
             </div>
           </div>
           <button onClick={() => setShowVerify(true)} className="mt-4 w-full rounded-xl bg-primary py-3.5 text-sm font-semibold text-primary-foreground">
