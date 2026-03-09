@@ -25,9 +25,9 @@ const hotels = [
 ];
 
 const roomTypes = [
-  { type: "Standard", price: 0, label: "Base price" },
-  { type: "Deluxe", price: 3000, label: "+Rs. 3,000" },
-  { type: "Suite", price: 7000, label: "+Rs. 7,000" },
+  { type: "Standard", price: 0, label: "Base price", image: roomStandard, desc: "Cozy room with queen bed" },
+  { type: "Deluxe", price: 3000, label: "+Rs. 3,000", image: roomDeluxe, desc: "Spacious room with city view" },
+  { type: "Suite", price: 7000, label: "+Rs. 7,000", image: roomSuite, desc: "Luxurious suite with living area" },
 ];
 
 const HotelPage = () => {
