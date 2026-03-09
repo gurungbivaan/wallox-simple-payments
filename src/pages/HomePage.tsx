@@ -10,6 +10,7 @@ import { useQuery } from "@tanstack/react-query";
 import { useTransactions } from "@/hooks/use-wallet";
 import { useUnreadCount } from "@/hooks/use-notifications";
 import { formatDistanceToNow } from "date-fns";
+import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
 
 const HomePage = () => {
   const navigate = useNavigate();
@@ -21,7 +22,7 @@ const HomePage = () => {
     queryFn: async () => {
       const { data } = await supabase
         .from("profiles")
-        .select("full_name, wallox_id")
+        .select("full_name, wallox_id, avatar_url")
         .eq("user_id", user!.id)
         .single();
       return data;
@@ -61,9 +62,12 @@ const HomePage = () => {
     <div className="min-h-screen bg-background pb-24">
       <div className="flex items-center justify-between px-5 pb-2 pt-6">
         <div className="flex items-center gap-3">
-          <div className="flex h-10 w-10 items-center justify-center rounded-full bg-primary/15">
-            <span className="font-display text-sm font-bold text-primary">W</span>
-          </div>
+          <Avatar className="h-10 w-10">
+            {profile?.avatar_url && <AvatarImage src={profile.avatar_url} alt={profile?.full_name || "User"} />}
+            <AvatarFallback className="bg-primary/15 font-display text-sm font-bold text-primary">
+              {profile?.full_name ? profile.full_name.charAt(0).toUpperCase() : "W"}
+            </AvatarFallback>
+          </Avatar>
           <div>
             <p className="text-xs text-muted-foreground">{greeting}</p>
             <h1 className="font-display text-base font-semibold text-foreground">{profile?.full_name ?? "Wallox User"}</h1>
