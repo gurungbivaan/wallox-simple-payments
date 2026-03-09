@@ -11,6 +11,9 @@ import hotelSoaltee from "@/assets/hotels/hotel-soaltee.jpg";
 import hotelShanker from "@/assets/hotels/hotel-shanker.jpg";
 import hotelDwarikas from "@/assets/hotels/hotel-dwarikas.jpg";
 import hotelTempleTree from "@/assets/hotels/hotel-temple-tree.jpg";
+import roomStandard from "@/assets/hotels/room-standard.jpg";
+import roomDeluxe from "@/assets/hotels/room-deluxe.jpg";
+import roomSuite from "@/assets/hotels/room-suite.jpg";
 
 const hotels = [
   { id: "1", name: "Hotel Yak & Yeti", location: "Durbar Marg, Kathmandu", rating: 4.8, price: 12500, image: hotelYakYeti, rooms: "Deluxe, Suite, Premium" },
