@@ -217,6 +217,15 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
+      list_group_members: {
+        Args: never
+        Returns: {
+          avatar_url: string
+          full_name: string
+          user_id: string
+          wallox_id: string
+        }[]
+      }
       lookup_user: {
         Args: { p_identifier: string; p_method?: string }
         Returns: {
