@@ -143,6 +143,20 @@ export const useTopup = () => {
   });
 };
 
+export const useGroupMembers = () => {
+  const { user } = useAuth();
+
+  return useQuery({
+    queryKey: ["group-members", user?.id],
+    queryFn: async () => {
+      const { data, error } = await supabase.rpc("list_group_members");
+      if (error) throw error;
+      return data as { user_id: string; full_name: string; wallox_id: string; avatar_url: string | null }[];
+    },
+    enabled: !!user?.id,
+  });
+};
+
 export const useLookupUser = () => {
   return useMutation({
     mutationFn: async ({

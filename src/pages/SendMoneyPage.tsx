@@ -1,10 +1,11 @@
-import { ArrowLeft, Phone, Mail, Hash, User, Check } from "lucide-react";
+import { ArrowLeft, Phone, Mail, Hash, User, Check, Users } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { motion, AnimatePresence } from "framer-motion";
 import { useState } from "react";
 import PinVerification from "@/components/PinVerification";
-import { useLookupUser, useTransfer } from "@/hooks/use-wallet";
+import { useLookupUser, useTransfer, useGroupMembers } from "@/hooks/use-wallet";
 import { useToast } from "@/hooks/use-toast";
+import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
 
 type SendMethod = "phone" | "email" | "wallox";
 
@@ -25,6 +26,12 @@ const SendMoneyPage = () => {
 
   const lookupUser = useLookupUser();
   const transfer = useTransfer();
+  const { data: groupMembers } = useGroupMembers();
+
+  const selectMember = (member: { user_id: string; full_name: string; wallox_id: string }) => {
+    setResolvedUser(member);
+    setStep("amount");
+  };
 
   const config = methodConfig[method];
 
@@ -71,6 +78,44 @@ const SendMoneyPage = () => {
       <AnimatePresence mode="wait">
         {step === "recipient" && (
           <motion.div key="recipient" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} className="px-5 pt-5">
+            {/* Group Members Directory */}
+            <div className="mt-5">
+              <div className="flex items-center gap-2 mb-3">
+                <Users className="h-4 w-4 text-primary" />
+                <h3 className="text-xs font-semibold text-foreground">Your Group</h3>
+              </div>
+              {groupMembers && groupMembers.length > 0 ? (
+                <div className="space-y-2">
+                  {groupMembers.map((member) => (
+                    <button
+                      key={member.user_id}
+                      onClick={() => selectMember({ user_id: member.user_id, full_name: member.full_name || "Unknown", wallox_id: member.wallox_id || "" })}
+                      className="flex w-full items-center gap-3 rounded-xl bg-secondary p-3 transition-colors hover:bg-secondary/80"
+                    >
+                      <Avatar className="h-9 w-9">
+                        {member.avatar_url && <AvatarImage src={member.avatar_url} />}
+                        <AvatarFallback className="bg-primary/15 text-xs font-bold text-primary">
+                          {member.full_name?.charAt(0)?.toUpperCase() || "?"}
+                        </AvatarFallback>
+                      </Avatar>
+                      <div className="text-left">
+                        <p className="text-sm font-medium text-foreground">{member.full_name || "Wallox User"}</p>
+                        <p className="text-[10px] font-mono text-muted-foreground">{member.wallox_id}</p>
+                      </div>
+                    </button>
+                  ))}
+                </div>
+              ) : (
+                <p className="text-xs text-muted-foreground py-4 text-center">No other members yet. Invite your group to sign up!</p>
+              )}
+            </div>
+
+            <div className="my-4 flex items-center gap-3">
+              <div className="h-px flex-1 bg-border" />
+              <span className="text-[10px] font-medium text-muted-foreground">OR SEARCH MANUALLY</span>
+              <div className="h-px flex-1 bg-border" />
+            </div>
+
             <div className="flex rounded-xl bg-secondary p-1">
               {(["phone", "email", "wallox"] as SendMethod[]).map((m) => {
                 const Icon = methodConfig[m].icon;
@@ -89,7 +134,7 @@ const SendMoneyPage = () => {
               })}
             </div>
 
-            <div className="mt-5">
+            <div className="mt-4">
               <label className="text-xs font-medium text-muted-foreground">{config.label}</label>
               <div className="mt-1.5 flex items-center gap-2 rounded-xl bg-secondary px-3 py-3">
                 <config.icon className="h-4 w-4 text-muted-foreground" />
@@ -105,7 +150,7 @@ const SendMoneyPage = () => {
             <button
               onClick={handleContinueToAmount}
               disabled={!recipient || lookupUser.isPending}
-              className="mt-6 w-full rounded-xl bg-primary py-3.5 text-sm font-semibold text-primary-foreground transition-opacity disabled:opacity-40"
+              className="mt-4 w-full rounded-xl bg-primary py-3.5 text-sm font-semibold text-primary-foreground transition-opacity disabled:opacity-40"
             >
               {lookupUser.isPending ? "Looking up..." : "Continue"}
             </button>
