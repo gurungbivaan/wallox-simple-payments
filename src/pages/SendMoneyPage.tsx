@@ -1,10 +1,11 @@
-import { ArrowLeft, Phone, Mail, Hash, User, Check } from "lucide-react";
+import { ArrowLeft, Phone, Mail, Hash, User, Check, Users } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { motion, AnimatePresence } from "framer-motion";
 import { useState } from "react";
 import PinVerification from "@/components/PinVerification";
-import { useLookupUser, useTransfer } from "@/hooks/use-wallet";
+import { useLookupUser, useTransfer, useGroupMembers } from "@/hooks/use-wallet";
 import { useToast } from "@/hooks/use-toast";
+import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
 
 type SendMethod = "phone" | "email" | "wallox";
 
