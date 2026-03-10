@@ -26,6 +26,12 @@ const SendMoneyPage = () => {
 
   const lookupUser = useLookupUser();
   const transfer = useTransfer();
+  const { data: groupMembers } = useGroupMembers();
+
+  const selectMember = (member: { user_id: string; full_name: string; wallox_id: string }) => {
+    setResolvedUser(member);
+    setStep("amount");
+  };
 
   const config = methodConfig[method];
 
