@@ -176,21 +176,3 @@ export const useLookupUser = () => {
     },
   });
 };
-  return useMutation({
-    mutationFn: async ({
-      identifier,
-      method,
-    }: {
-      identifier: string;
-      method: "phone" | "email" | "wallox";
-    }) => {
-      const { data, error } = await supabase.rpc("lookup_user", {
-        p_identifier: identifier,
-        p_method: method,
-      });
-      if (error) throw error;
-      if (!data || data.length === 0) throw new Error("User not found");
-      return data[0] as { user_id: string; full_name: string; wallox_id: string };
-    },
-  });
-};
